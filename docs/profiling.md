@@ -104,17 +104,17 @@ This will show how much time each crate in your app's dependency tree took to bu
 ## How to Use Memory Profiling in Bevy
 
 1. First, clone the Bevy repository to your local machine using the following command:
-
+```bash
 git clone https://github.com/bevyengine/bevy.git
-
+```
 
 
 2. Once you have cloned the repository, navigate to the `bevy` directory and open the `Cargo.toml` file in a text editor.
 
 3. In the `[features]` section of the `Cargo.toml` file, add the following line:
-
+``` rust
 tracy_client = ["bevy/tracy_client"]
-
+```
 
 
 
@@ -125,17 +125,17 @@ This enables the Tracy profiling feature in Bevy.
 5. Open the `Cargo.toml` file for the `breakout` example in a text editor.
 
 6. In the `[dependencies]` section of the `Cargo.toml` file, add the following line:
-
+``` rust
 bevy_tracy = { version = "*", features = ["wgpu"] }
-
+```
 
 
 This adds the `bevy_tracy` crate as a dependency for the example.
 
 7. In the `[bin]` section of the `Cargo.toml` file, add the following line:
-
+``` rust 
 bevy_tracy = { path = "../../bevy/tracy_client" }
-
+```
 
 
 This tells Cargo to include the `bevy_tracy` crate from the Bevy repository.
@@ -143,9 +143,9 @@ This tells Cargo to include the `bevy_tracy` crate from the Bevy repository.
 8. Save the `Cargo.toml` file and navigate to the example directory in your terminal.
 
 9. Run the example with the following command:
-
+``` rust 
 cargo run --features="tracy_client"
-
+```
 
 
 
@@ -153,4 +153,4 @@ This enables the Tracy profiling feature and runs the example.
 
 10. If everything is set up correctly, you should see a new window open up showing the Tracy profiler. You can use this to view memory usage, CPU usage, and other performance metrics for your Bevy application.
 
-That's it! You should now be able to use memory profiling in Bevy. If you encounter any issues, try consulting the Bevy documentation or the Tracy documentation for more information.
+That's it! You should now be able to use memory profiling in Bevy.
