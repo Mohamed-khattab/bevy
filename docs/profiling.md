@@ -99,3 +99,27 @@ The report is a `.html` file and can be opened and viewed in your browser.
 This will show how much time each crate in your app's dependency tree took to build.
 
 ![image](https://user-images.githubusercontent.com/2694663/141657811-f4e15e3b-c9fc-491b-9313-236fd8c01288.png)
+
+## Memory Profiling
+
+Bevy provides built-in memory profiling tools that make it easy to analyze and optimize the memory usage of your game or application.
+
+To enable memory profiling in Bevy, set the `bevy_memory_profiling` feature flag in your `Cargo.toml` file:
+
+```toml
+[dependencies]
+bevy = { version = "0.5", features = ["bevy_memory_profiling"] }
+
+You can collect memory statistics by calling the bevy_memory_profiling::print_memory_stats() function at any point in your game or application:
+
+rust
+
+fn update_memory_stats_system(mut stats: ResMut<MemoryStats>) {
+    // Collect memory statistics
+    bevy_memory_profiling::print_memory_stats();
+
+    // Update the memory stats resource with the latest statistics
+    *stats = bevy_memory_profiling::get_memory_stats();
+}
+
+You can visualize the memory statistics collected by Bevy using external tools such as Chrome's DevTools or Visual Studio Code's Memory Profiler extension.
