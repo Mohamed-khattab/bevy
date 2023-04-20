@@ -100,26 +100,57 @@ This will show how much time each crate in your app's dependency tree took to bu
 
 ![image](https://user-images.githubusercontent.com/2694663/141657811-f4e15e3b-c9fc-491b-9313-236fd8c01288.png)
 
-## Memory Profiling
 
-Bevy provides built-in memory profiling tools that make it easy to analyze and optimize the memory usage of your game or application.
+## How to Use Memory Profiling in Bevy
 
-To enable memory profiling in Bevy, set the `bevy_memory_profiling` feature flag in your `Cargo.toml` file:
+1. First, clone the Bevy repository to your local machine using the following command:
 
-```toml
-[dependencies]
-bevy = { version = "0.5", features = ["bevy_memory_profiling"] }
+git clone https://github.com/bevyengine/bevy.git
 
-You can collect memory statistics by calling the bevy_memory_profiling::print_memory_stats() function at any point in your game or application:
 
-rust
 
-fn update_memory_stats_system(mut stats: ResMut<MemoryStats>) {
-    // Collect memory statistics
-    bevy_memory_profiling::print_memory_stats();
+2. Once you have cloned the repository, navigate to the `bevy` directory and open the `Cargo.toml` file in a text editor.
 
-    // Update the memory stats resource with the latest statistics
-    *stats = bevy_memory_profiling::get_memory_stats();
-}
+3. In the `[features]` section of the `Cargo.toml` file, add the following line:
 
-You can visualize the memory statistics collected by Bevy using external tools such as Chrome's DevTools or Visual Studio Code's Memory Profiler extension.
+tracy_client = ["bevy/tracy_client"]
+
+
+
+
+This enables the Tracy profiling feature in Bevy.
+
+4. Next, navigate to the `examples` directory within the `bevy` directory and choose the example you want to profile. For this example, we'll use the `breakout` example.
+
+5. Open the `Cargo.toml` file for the `breakout` example in a text editor.
+
+6. In the `[dependencies]` section of the `Cargo.toml` file, add the following line:
+
+bevy_tracy = { version = "*", features = ["wgpu"] }
+
+
+
+This adds the `bevy_tracy` crate as a dependency for the example.
+
+7. In the `[bin]` section of the `Cargo.toml` file, add the following line:
+
+bevy_tracy = { path = "../../bevy/tracy_client" }
+
+
+
+This tells Cargo to include the `bevy_tracy` crate from the Bevy repository.
+
+8. Save the `Cargo.toml` file and navigate to the example directory in your terminal.
+
+9. Run the example with the following command:
+
+cargo run --features="tracy_client"
+
+
+
+
+This enables the Tracy profiling feature and runs the example.
+
+10. If everything is set up correctly, you should see a new window open up showing the Tracy profiler. You can use this to view memory usage, CPU usage, and other performance metrics for your Bevy application.
+
+That's it! You should now be able to use memory profiling in Bevy. If you encounter any issues, try consulting the Bevy documentation or the Tracy documentation for more information.
