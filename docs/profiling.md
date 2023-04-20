@@ -103,54 +103,128 @@ This will show how much time each crate in your app's dependency tree took to bu
 
 ## How to Use Memory Profiling in Bevy
 
-1. First, clone the Bevy repository to your local machine using the following command:
-```bash
-git clone https://github.com/bevyengine/bevy.git
-```
+- Introduction
 
+Memory profiling is a technique that can be used to track the amount of memory that is being used by a program. This can be useful for identifying areas of memory usage that are inefficient or wasteful.
 
-2. Once you have cloned the repository, navigate to the `bevy` directory and open the `Cargo.toml` file in a text editor.
+In Bevy, memory profiling can be enabled by using the bevy_tracing crate. This crate provides a number of features for tracking memory usage, including:
 
-3. In the `[features]` section of the `Cargo.toml` file, add the following line:
+    A memory profiler that can be used to track the amount of memory that is being used by each object in a program.
+    A heap profiler that can be used to track the allocation and deallocation of memory.
+    A stack profiler that can be used to track the stack usage of a program.
+
+- Enabling Memory Profiling
+
+To enable memory profiling in Bevy, you need to add the following to your Cargo.toml file:
 ``` rust
-tracy_client = ["bevy/tracy_client"]
+[dependencies]
+bevy_tracing = "0.5.0"
 ```
-
-
-
-This enables the Tracy profiling feature in Bevy.
-
-4. Next, navigate to the `examples` directory within the `bevy` directory and choose the example you want to profile. For this example, we'll use the `breakout` example.
-
-5. Open the `Cargo.toml` file for the `breakout` example in a text editor.
-
-6. In the `[dependencies]` section of the `Cargo.toml` file, add the following line:
+You also need to enable the tracing feature in your bevy.toml file:
 ``` rust
-bevy_tracy = { version = "*", features = ["wgpu"] }
+[features]
+default = ["tracing"]
 ```
+- Using the Memory Profiler
 
+Once you have enabled memory profiling, you can use the bevy_tracing crate to track the amount of memory that is being used by your program.
 
-This adds the `bevy_tracy` crate as a dependency for the example.
+To do this, you need to create a tracing::subscriber and register it with the bevy_tracing crate. The following code shows how to do this:
 
-7. In the `[bin]` section of the `Cargo.toml` file, add the following line:
-``` rust 
-bevy_tracy = { path = "../../bevy/tracy_client" }
+use bevy_tracing::{
+    Subscriber,
+    Tracing,
+};
+
+fn main() {
+    // Create a subscriber.
+    let subscriber = Subscriber::new();
+
+    // Register the subscriber with the `bevy_tracing` crate.
+    Tracing::with_subscriber(subscriber).run();
+}
+
+Once you have registered the subscriber, you can start tracking memory usage by calling the start() method on the subscriber. The following code shows how to do this:
+
+use bevy_tracing::{
+    Subscriber,
+    Tracing,
+};
+
+fn main() {
+    // Create a subscriber.
+    let subscriber = Subscriber::new();
+
+    // Register the subscriber with the `bevy_tracing` crate.
+    Tracing::with_subscriber(subscriber).run();
+
+    // Start tracking memory usage.
+    subscriber.start();
+
+    // Do some work that uses memory.
+
+    // Stop tracking memory usage.
+    subscriber.stop();
+}
+
+After you have stopped tracking memory usage, you can get the results of the memory profiling by calling the get_results() method on the subscriber. The following code shows how to do this:
+
+use bevy_tracing::{
+    Subscriber,
+    Tracing,
+};
+
+fn main() {
+    // Create a subscriber.
+    let subscriber = Subscriber::new();
+
+    // Register the subscriber with the `bevy_tracing` crate.
+    Tracing::with_subscriber(subscriber).run();
+
+    // Start tracking memory usage.
+    subscriber.start();
+
+    // Do some work that uses memory.
+
+    // Stop tracking memory usage.
+    let results = subscriber.get_results();
+
+    // Print the results.
+    println!("{:?}", results);
+}
+
+The results of the memory profiling will be a tracing::Result. This result contains a number of fields, including:
+
+    total_memory: The total amount of memory that was used by the program.
+    peak_memory: The peak amount of memory that was used by the program.
+    objects: A list of objects that were created by the program. Each object in the list has a number of fields, including:
+        name: The name of the object.
+        size: The size of the object in bytes.
+        references: The number of references to the object.
+
+- Using the Heap Profiler
+
+The bevy_tracing crate also provides a heap profiler that can be used to track the allocation and deallocation of memory.
+
+To use the heap profiler, you need to enable the heap_profiler feature in your bevy.toml file:
+``` rust
+[features]
+default = ["tracing", "heap_profiler"]
 ```
+Once you have enabled the heap profiler, you can start tracking memory allocations and deallocations by calling the start() method on the subscriber. The following code shows how to do this
 
+- Analyze the memory profile
 
-This tells Cargo to include the `bevy_tracy` crate from the Bevy repository.
+Once you have opened the memory profile in a profiler, you can analyze it to see where your app is allocating memory.
 
-8. Save the `Cargo.toml` file and navigate to the example directory in your terminal.
+Here are some tips for analyzing memory profiles:
 
-9. Run the example with the following command:
-``` rust 
-cargo run --features="tracy_client"
-```
+    Look for large allocations. Large allocations can be a sign of memory leaks.
+    Look for allocations that are not freed. Unfreed allocations can also be a sign of memory leaks.
+    Look for allocations that are growing over time. Growing allocations can be a sign of memory leaks or inefficient memory usage.
 
+Here are some common causes of memory leaks in Bevy:
 
-
-This enables the Tracy profiling feature and runs the example.
-
-10. If everything is set up correctly, you should see a new window open up showing the Tracy profiler. You can use this to view memory usage, CPU usage, and other performance metrics for your Bevy application.
-
-That's it! You should now be able to use memory profiling in Bevy.
+    Unfreed resources. Resources such as meshes, textures, and shaders should be freed when they are no longer needed.
+    Unused objects. Objects that are no longer needed should be removed from the scene.
+    Leaky components. Components that contain references to other objects can cause memory leaks if those references are not cleaned up properly.
